@@ -38,14 +38,11 @@ SPOT_CUT_DURATION_SECONDS = 30 * SECONDS_PER_MINUTE
 class Mower(BLEClient):
     def __init__(self, channel_id: int, address, pin=None):
         super().__init__(channel_id, address, pin)
-        self.keep_alive_event = asyncio.Event()
-        self.task: asyncio.Task | None = None
         self._session_ready = False
         self._connecting_task: asyncio.Task | None = None
-
-    def is_connected(self) -> bool:
-        """Report a usable session, not just an established BLE transport."""
-        return self._session_ready and super().is_connected()
+        self.keep_alive_event = asyncio.Event()
+        self.task: asyncio.Task | None = None
+        self._connect_lock = asyncio.Lock()
 
     async def connect(self, device) -> ResponseResult:
         """
@@ -74,6 +71,10 @@ class Mower(BLEClient):
                 self._connecting_task = None
                 if not self._session_ready:
                     await self.disconnect()
+
+    def is_connected(self) -> bool:
+        """Report a usable session, not just an established BLE transport."""
+        return self._session_ready and super().is_connected()
 
     async def _request_response_locked(self, request_data):
         """Keep handshake, batch commands and cleanup in one transaction."""
