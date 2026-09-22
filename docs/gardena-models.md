@@ -43,9 +43,13 @@ firmware disables those version-dependent writes rather than guessing.
   enable/disable follows the app's repeated writes, clears share on disable and
   verifies the result. Callers must inspect the returned ResponseResult.
 - `get_diagnostics()` selects G3 Comboard/legacy loops or G4 diagnostics. Failed
-  values remain unknown; transient failures are retried on later calls, while
-  unsupported commands are cached until explicit re-identification. No automatic
-  polling is introduced. Raw orientation is in tenths of degrees, battery voltage
+  values remain unknown. Optional reads that return INVALID_GROUP, INVALID_ID or
+  NOT_AVAILABLE, or raise KeyError, are remembered in the instance's
+  `_unsupported_diagnostics` set by command name and arguments. Subsequent
+  optional reads skip those entries until `initialize_model()` clears the set.
+  Other failed replies are retried on later calls. This set is also used by
+  optional settings and SpotCut-status reads; it does not store sensor values.
+  No automatic polling is introduced. Raw orientation is in tenths of degrees, battery voltage
   in mV; UI conversion/history migration are the consumer's responsibility.
 - `get_spot_status()` normalizes G3 versus G4 status without starting SpotCut.
 

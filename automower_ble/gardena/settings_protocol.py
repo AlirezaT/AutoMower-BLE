@@ -4,7 +4,7 @@ from automower_ble.protocol import ResponseResult
 
 
 def corrected_protocol(protocol, capabilities=None):
-    """Return an instance-local copy; never patch the installed upstream package."""
+    """Return model-selected definitions without modifying the input mapping."""
     result = dict(protocol)
     result["GetSpotCutAvailable"] = {"major": 4710, "minor": 0, "responseType": "bool"}
     result["AbortSpotCutting"] = {"major": 4710, "minor": 8}

@@ -80,7 +80,7 @@ class ActionMixin:
             result, _ = await self.command_response("StartTrigger", warn_on_error=False)
             if result is ResponseResult.UNKNOWN_ERROR:
                 # Like upstream's mowing trigger handling, allow firmware time to
-                # settle. Never infer success from cached HOME or activity alone.
+                # settle. Require fresh mode, state and activity replies.
                 await asyncio.sleep(2)
                 readings = {}
                 for command in ("GetMode", "GetState", "GetActivity"):
