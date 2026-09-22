@@ -220,9 +220,9 @@ class Mower(BLEClient):
 
         Time counters are raw seconds; collision and charge counters are counts.
         Unavailable, rejected or malformed fields are None, never fabricated zero.
-        Reads are not an atomic snapshot. No support failures are cached here:
-        a subsequent explicit call can recover from a transient device response.
-        Transport errors and cancellation propagate to the caller.
+        Reads are not an atomic snapshot. Each call attempts all six counters,
+        including counters whose previous read failed. Exceptions raised by
+        command_response are not caught by this method.
         """
         statistics: dict[str, int | None] = {}
         for field, command in (

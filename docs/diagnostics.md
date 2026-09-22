@@ -11,8 +11,10 @@
 Each uses its individual Statistics command (4726/1 through 4726/6). A rejected,
 unavailable or malformed field is `None`; a valid zero remains zero. The method
 does not require `GetAllStatistics`, does not read/reset the blade counter, and
-does not cache support failures or introduce polling. Separate calls can recover
-from transient replies. Transport exceptions and cancellation propagate.
+does not introduce polling. Each call attempts all six counters again, including
+those whose previous read failed. Exceptions raised by `command_response` are
+not caught by this method. This PR does not change transport-level cancellation
+handling; cancellation propagation is addressed separately in PR #165.
 The six reads are not an atomic snapshot and support on every model is not implied.
 
 The existing raw `GetAllStatistics` command remains available for consumers that
