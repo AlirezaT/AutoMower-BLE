@@ -38,7 +38,8 @@ not claim to make all calendar operations valid on every mower model.
 check it; existing callers that ignore the return continue to work. Resume sends
 one StartTrigger, with no retry. Only UNKNOWN_ERROR can be reconciled using the
 existing delayed read-back mechanism: both reads must succeed and show
-IN_OPERATION with GOING_OUT, MOWING or GOING_HOME. Other replies remain failures.
+IN_OPERATION with GOING_OUT, MOWING or GOING_HOME. An OK reply succeeds directly;
+other non-OK replies remain failures.
 
 The existing manual-mow/SpotCut read-back helper also now checks both read result
 codes. Their command sequences are unchanged, as is permanent park in this PR.
